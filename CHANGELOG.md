@@ -2,6 +2,18 @@
 
 All changes to this project will be documented in this file
 
+## [2.0.1-14]
+
+### Fixed
+
+- `Triangulation`: fixed failure on polygons with collinear vertex at local minimum (upstream [#1075](https://github.com/AngusJohnson/Clipper2/issues/1075)) — moved `locMinStack` push after the collinear skip check to prevent duplicate pushes that double-flip `innerLM`
+
+### Performance
+
+- `Triangulation`: 2.4–2.8x faster for 500+ vertex polygons via angle heuristic (Domiter & Zalik 2008 §3.2) that limits triangle fan extension, reducing unnecessary Lawson legalizations
+- `Triangulation`: replaced BigInt in `segsIntersect` with exact Shewchuk orient2d predicates
+- `Triangulation`: pre-allocated `forceLegal` edge arrays and inlined `areSafeDeltas` checks to reduce per-call allocation overhead
+
 ## [2.0.1-13]
 
 ### Fixed
