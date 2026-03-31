@@ -1,5 +1,5 @@
 import { describe, test, expect } from 'vitest';
-import { Clipper, Clipper64, ClipperBase, ClipperD, EndType, InternalClipper, JoinType, OutPt, OutRec, PointInPolygonResult, Rect64Utils, type Point64, type Rect64 } from '../src';
+import { Clipper, Clipper64, ClipperBase, ClipperD, ClipType, EndType, FillRule, InternalClipper, JoinType, OutPt, OutRec, PathType, PointInPolygonResult, Rect64Utils, type PathD, type PathsD, type Point64, type Rect64 } from '../src';
 
 function crossProductBigInt(pt1: Point64, pt2: Point64, pt3: Point64): bigint {
   const a = BigInt(pt2.x - pt1.x);
@@ -421,5 +421,38 @@ describe('InternalClipper precision with large safe integers', () => {
     ]];
     expect(() => Clipper.inflatePathsD(paths, 1, JoinType.Miter, EndType.Polygon, 2, precision))
       .toThrow(RangeError);
+  });
+
+  // https://github.com/countertype/clipper2-ts/issues/27
+  test('ClipperD.addPath produces same result as addPaths (issue #27)', () => {
+    const square: PathD = [
+      { x: 0, y: 0 },
+      { x: 10, y: 0 },
+      { x: 10, y: 10 },
+      { x: 0, y: 10 },
+    ];
+    const clip: PathD = [
+      { x: 5, y: 5 },
+      { x: 15, y: 5 },
+      { x: 15, y: 15 },
+      { x: 5, y: 15 },
+    ];
+
+    const resultViaAddPath: PathsD = [];
+    const cAddPath = new ClipperD(2);
+    cAddPath.addPath(square, PathType.Subject);
+    cAddPath.addPath(clip, PathType.Clip);
+    cAddPath.execute(ClipType.Intersection, FillRule.EvenOdd, resultViaAddPath);
+
+    const resultViaAddPaths: PathsD = [];
+    const cAddPaths = new ClipperD(2);
+    cAddPaths.addPaths([square], PathType.Subject);
+    cAddPaths.addPaths([clip], PathType.Clip);
+    cAddPaths.execute(ClipType.Intersection, FillRule.EvenOdd, resultViaAddPaths);
+
+    expect(resultViaAddPath).toEqual(resultViaAddPaths);
+    expect(resultViaAddPath.length).toBe(1);
+    const area = Clipper.areaD(resultViaAddPath[0]);
+    expect(Math.abs(area)).toBeCloseTo(25, 5);
   });
 });

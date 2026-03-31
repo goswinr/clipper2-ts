@@ -2,6 +2,12 @@
 
 All changes to this project will be documented in this file
 
+## [2.0.1-15]
+
+### Fixed
+
+- `ClipperD`: `addPath` no longer applies scaling twice ([#27](https://github.com/countertype/clipper2-ts/issues/27), [#28](https://github.com/countertype/clipper2-ts/pull/28))
+
 ## [2.0.1-14]
 
 ### Fixed
