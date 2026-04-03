@@ -1,3 +1,7 @@
+This fork is used to run the JS tests against the [F# port of Clipper2](https://github.com/goswinr/Clipper2) when it is compiled to JS with Fable.
+
+Original readme:
+
 # clipper2-ts
 
 [![npm version](https://img.shields.io/npm/v/clipper2-ts.svg)](https://www.npmjs.com/package/clipper2-ts)
@@ -110,7 +114,7 @@ This library uses `BigInt` internally. Some versions/configurations of terser ha
 
 If you still hit terser issues in a consuming build, one workaround is `terserOptions: { compress: { evaluate: false } }`
 
-## Performance 
+## Performance
 
 Faster than JavaScript-based Clipper (Clipper1) ports, slower than Clipper2-WASM; choose based on your constraints
 
